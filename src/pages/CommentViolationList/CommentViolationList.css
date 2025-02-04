@@ -2,20 +2,16 @@
 
 .comment-violation-page {
     padding: 16px;
-  }
-  
-  .controls {
-    margin-bottom: 8px;
-  }
-  
-  .comment-violation-table {
+}
+
+.comment-violation-table {
     width: 100%;
-    border-collapse: collapse;
-  }
+    border-collapse: separate;
+}
   
-  .comment-violation-table th,
-  .comment-violation-table td {
+.comment-violation-table th,
+.comment-violation-table td {
     border: 1px solid #ccc;
     padding: 8px;
-    text-align: left;
-  }
+    text-align: center;
+}
