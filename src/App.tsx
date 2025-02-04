@@ -1,29 +1,32 @@
 /* src/App.tsx */
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import CozyLogViolationList from './pages/CozyLogViolationList/CozyLogViolationList.tsx';
-import CommentViolationList from './pages/CommentViolationList/CommentViolationList.tsx';
+import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/Login/Login.tsx';
+import AdminPage from './pages/Admin/Admin.tsx';
+import PrivateRoute from './PrivateRoute.tsx';
 
 function App() {
   return (
     <Router>
-      <div>
-        <nav style={{ display: 'flex', 
-          justifyContent: 'center', /* 가운데 정렬 */
-          alignItems: 'center',
-          gap: '2rem',
-          marginTop: '2rem' }}>
-          <Link to="/cozylog-violations">코지로그 신고 목록</Link>
-          <Link to="/comment-violations">댓글 신고 목록</Link>
-        </nav>
+      <Routes>
+        {/* <Route path="/" element={<LoginPage />} /> */}
+        <Route path="/" element={<LoginPage />} />
 
-        <Routes>
-          <Route path="/cozylog-violations" element={<CozyLogViolationList />} />
-          <Route path="/comment-violations" element={<CommentViolationList />} />
-          {/* 기본 라우트 등 추가 */}
-        </Routes>
-      </div>
+        {/* "/admin/*" → PrivateRoute(로그인 필요) */}
+        <Route 
+          path="/admin/*" 
+          element={
+            <PrivateRoute>
+              <AdminPage />
+            </PrivateRoute>
+          } 
+        />
+
+        {/* 기타 */}
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
     </Router>
   );
 }
