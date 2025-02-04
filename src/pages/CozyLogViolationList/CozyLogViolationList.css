@@ -6,7 +6,7 @@
   
   .cozylog-violation-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
   }
   
   .cozylog-violation-table th, .cozylog-violation-table td {

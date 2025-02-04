@@ -28,8 +28,8 @@ const CozyLogViolationList: React.FC = () => {
           reporter: '신고자A',
           reason: '부적절한 내용',
           reportedDate: '2025-01-01',
-          title: '문제의 코지로그',
-          content: '이 코지로그 내용에는...',
+          title: '문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그',
+          content: '명령어를 실행하여 해당 프로세스를 중지합니다. 이러한 방법으로 포트 충돌 문제를 해결할 수 있습니다.다른 포트로 변경하기 가장 간단한 해결책은 프로젝트에서 사용하는 포트 번호를 변경하는 것입니다. 이를 위해서는 프로젝트의 코드에서 포트 번호를 수정하거나, 환경 변수를 변경해야 할 수도 있습니다. ',
           writer: '작성자X',
           postedDate: '2024-12-31'
         },
@@ -59,12 +59,18 @@ const CozyLogViolationList: React.FC = () => {
       setSelectedViolation(null);
     };
   
-    // 게시글 삭제(예시)
-    const handleDeletePost = (id: number) => {
-      // 실제 API 호출로 삭제 요청
-      console.log('Delete post id:', id);
-      alert(`게시글 ID ${id}를 삭제합니다.`);
-  
+    // 게시글 삭제
+    const handleDeletePost = (id: number, approve: boolean) => {
+      // // TODO: 실제 API 연동
+      if (approve) { 
+        // 게시글 신고 승인
+        console.log('게시글 ID:', id);
+        alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
+      } else {  
+        // 게시글 신고 반려
+        console.log('게시글 ID:', id);
+        alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
+      }
       // 삭제 후 목록 갱신 예시
       setViolations(prev => prev.filter(item => item.id !== id));
       handleCloseModal();
@@ -76,7 +82,6 @@ const CozyLogViolationList: React.FC = () => {
         <table className="cozylog-violation-table">
           <thead>
             <tr>
-              <th>신고 번호</th>
               <th>신고한 사람</th>
               <th>신고 사유</th>
               <th>신고 날짜</th>
@@ -87,12 +92,12 @@ const CozyLogViolationList: React.FC = () => {
           <tbody>
             {violations.map((v) => (
               <tr key={v.id} onClick={() => handleRowClick(v)}>
-                <td>{v.id}</td>
                 <td>{v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
                 <td>{v.title}</td>
                 <td>{v.writer}</td>
+                
               </tr>
             ))}
           </tbody>
@@ -105,19 +110,25 @@ const CozyLogViolationList: React.FC = () => {
               className="modal-content" 
               onClick={(e) => e.stopPropagation()}  // 모달 영역 클릭 시 닫히지 않도록
             >
-              <h3>신고 상세</h3>
-              <p><strong>신고 번호:</strong> {selectedViolation.id}</p>
+              <h3>📌 신고 상세 페이지</h3>
               <p><strong>신고자:</strong> {selectedViolation.reporter}</p>
               <p><strong>신고 사유:</strong> {selectedViolation.reason}</p>
               <p><strong>신고 날짜:</strong> {selectedViolation.reportedDate}</p>
-              <hr />
-              <h4>코지로그 상세</h4>
+              <hr color="lightgrey" />
+              <h4>✅ 코지로그 상세</h4>
               <p><strong>제목:</strong> {selectedViolation.title}</p>
               <p><strong>내용:</strong> {selectedViolation.content}</p>
               <p><strong>작성자:</strong> {selectedViolation.writer}</p>
               <p><strong>작성 날짜:</strong> {selectedViolation.postedDate}</p>
-              <button onClick={() => handleDeletePost(selectedViolation.id)}>게시글 삭제</button>
+              <div style = {{
+                display: 'flex',
+                justifyContent: 'end',
+                gap: '1rem',
+              }}>
+              <button onClick={() => handleDeletePost(selectedViolation.id, true)}>승인</button>
+              <button onClick={() => handleDeletePost(selectedViolation.id, false)}>반려</button>
               <button onClick={handleCloseModal}>닫기</button>
+              </div>
             </div>
           </div>
         )}
