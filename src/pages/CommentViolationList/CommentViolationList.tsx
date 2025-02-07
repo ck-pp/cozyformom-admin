@@ -1,65 +1,66 @@
 // src/pages/CommentViolationList/CommentViolationList.tsx
 
 import React, { useEffect, useState } from 'react';
-import './CommentViolationList.css';
 
-interface CommentViolation {
-    id: number;
-    reporter: string;        // 신고한 사람
-    reason: string;          // 신고 사유
-    reportedDate: string;    // 신고 날짜
-    commentWriter: string;   // 댓글 작성자
-    commentDate: string;     // 댓글 작성 날짜
-    content: string;         // 댓글 내용
-    checked?: boolean;       // 일괄 선택/삭제를 위한 체크박스 여부
-  }
+import './CommentViolationList.css';
+import { CommentListItem } from '../../types/CommentType';
+import { blockComment, getViolatedComments } from '../../api/baseApi.ts';
   
   const CommentViolationList: React.FC = () => {
-    const [violations, setViolations] = useState<CommentViolation[]>([]);
+    const [violations, setViolations] = useState<CommentListItem[]>([]);
   
     // 더미 데이터 예시
     useEffect(() => {
-      const dummyData: CommentViolation[] = [
-        {
-          id: 101,
-          reporter: '신고자C',
-          reason: '광고성 댓글',
-          reportedDate: '2025-01-03',
-          commentWriter: '댓글작성자A',
-          commentDate: '2025-01-02',
-          content: '이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다.',
-          checked: false
-        },
-        {
-          id: 102,
-          reporter: '신고자D',
-          reason: '욕설 포함',
-          reportedDate: '2025-01-04',
-          commentWriter: '댓글작성자B',
-          commentDate: '2025-01-03',
-          content: '심한 욕이 포함된 댓글입니다',
-          checked: false
+      // const dummyData: CommentListItem[] = [
+      //   {
+      //     id: 101,
+      //     reporter: '신고자C',
+      //     reason: '광고성 댓글',
+      //     reportedDate: '2025-01-03',
+      //     commentWriter: '댓글작성자A',
+      //     commentDate: '2025-01-02',
+      //     content: '이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다.',
+      //     checked: false
+      //   },
+      //   {
+      //     id: 102,
+      //     reporter: '신고자D',
+      //     reason: '욕설 포함',
+      //     reportedDate: '2025-01-04',
+      //     commentWriter: '댓글작성자B',
+      //     commentDate: '2025-01-03',
+      //     content: '심한 욕이 포함된 댓글입니다',
+      //     checked: false
+      //   }
+      // ];
+
+      getViolatedComments()
+            .then((data) => {
+              console.log('가공된 목록:', data);
+              setViolations(data);
+            })
+            .catch((err) => {
+              console.error('에러 발생:', err);
+            });
+            
+          }, []);
+  
+    // 댓글 신고 승인/반려 처리
+        const handleDeletePost = async (id: number, approve: boolean) => {
+          // // TODO: 실제 API 연동
+          const processResult = approve ? 'APPROVED' : 'REJECTED';
+          try {
+            await blockComment({
+                reportedId: id,
+                process: processResult,
+            });
+            console.log('댓글 ID:', id);
+            alert(`선택된 댓글(${id}) 신고가 처리되었습니다.`);
+            setViolations(prev => prev.filter(item => item.reportedId !== id));
+          } catch (err) {
+            console.error('승인 실패:', err);
+          }
         }
-      ];
-      setViolations(dummyData);
-    }, []);
-  
-    // 댓글 삭제 승인/반려 처리
-    const handleDeletePost = (id: number, approve: boolean) => {
-  
-      // TODO: 댓글 삭제 API 연동
-      if (approve) {  // 댓글 신고 승인
-        console.log('댓글 ID:', id);
-        alert(`선택된 댓글(${id}) 신고가 승인되었습니다.`);
-      } else {  // 댓글 신고 반려
-        console.log('댓글 ID:', id);
-        alert(`선택된 댓글(${id}) 신고가 반려되었습니다.`);
-      }
-
-    //   삭제 후 목록 갱신
-      setViolations(prev => prev.filter(item => item.id !== id));
-    };
-
   
     return (
       <div className="comment-violation-page">
@@ -79,7 +80,7 @@ interface CommentViolation {
           </thead>
           <tbody>
             {violations.map((v) => (
-              <tr key={v.id}>
+              <tr key={v.reportedId}>
                 <td>{v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
@@ -92,8 +93,8 @@ interface CommentViolation {
                         gap: '1rem',
                         justifyContent: 'center'
                     }}>
-                        <button onClick={() => handleDeletePost(v.id, true)}>승인</button>
-                        <button onClick={() => handleDeletePost(v.id, false)}>반려</button>
+                        <button onClick={() => handleDeletePost(v.reportedId, true)}>승인</button>
+                        <button onClick={() => handleDeletePost(v.reportedId, false)}>반려</button>
                     </div>
                 </td>
               </tr>
