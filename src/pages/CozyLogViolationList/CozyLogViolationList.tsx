@@ -2,53 +2,52 @@
 
 import React, { useEffect, useState } from 'react';
 import './CozyLogViolationList.css';
-
-interface CozyLogViolation {
-    id: number;
-    reporter: string;       // 신고한 사람
-    reason: string;         // 신고 사유
-    reportedDate: string;   // 신고 날짜
-    title: string;          // 코지로그 제목
-    content: string;        // 코지로그 내용
-    writer: string;         // 코지로그 작성자
-    postedDate: string;     // 코지로그 작성 날짜
-  }
+import { CozylogListItem } from '../../types/CozylogType';
+import { blockCozylog, getViolatedCozylogs } from '../../api/baseApi.ts';
 
 // TODO: 코지로그 신고 리스트에서도 일괄삭제 필요한지 논의하기
 const CozyLogViolationList: React.FC = () => {
-    const [violations, setViolations] = useState<CozyLogViolation[]>([]);
-    const [selectedViolation, setSelectedViolation] = useState<CozyLogViolation | null>(null);
+    const [violations, setViolations] = useState<CozylogListItem[]>([]);
+    const [selectedViolation, setSelectedViolation] = useState<CozylogListItem | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
   
     // 예시: 더미 데이터
     useEffect(() => {
-      const dummyData: CozyLogViolation[] = [
-        {
-          id: 1,
-          reporter: '신고자A',
-          reason: '부적절한 내용',
-          reportedDate: '2025-01-01',
-          title: '문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그',
-          content: '명령어를 실행하여 해당 프로세스를 중지합니다. 이러한 방법으로 포트 충돌 문제를 해결할 수 있습니다.다른 포트로 변경하기 가장 간단한 해결책은 프로젝트에서 사용하는 포트 번호를 변경하는 것입니다. 이를 위해서는 프로젝트의 코드에서 포트 번호를 수정하거나, 환경 변수를 변경해야 할 수도 있습니다. ',
-          writer: '작성자X',
-          postedDate: '2024-12-31'
-        },
-        {
-          id: 2,
-          reporter: '신고자B',
-          reason: '욕설 포함',
-          reportedDate: '2025-01-02',
-          title: '또 다른 문제의 코지로그',
-          content: '또 다른 코지로그 내용...',
-          writer: '작성자Y',
-          postedDate: '2025-01-01'
-        }
-      ];
-      setViolations(dummyData);
+    //   const dummyData: CozylogListItem[] = [
+    //     {
+    //       reportedId: 1,
+    //       reporter: '신고자A',
+    //       reason: '부적절한 내용',
+    //       reportedDate: '2025-01-01',
+    //       title: '문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그',
+    //       content: '명령어를 실행하여 해당 프로세스를 중지합니다. 이러한 방법으로 포트 충돌 문제를 해결할 수 있습니다.다른 포트로 변경하기 가장 간단한 해결책은 프로젝트에서 사용하는 포트 번호를 변경하는 것입니다. 이를 위해서는 프로젝트의 코드에서 포트 번호를 수정하거나, 환경 변수를 변경해야 할 수도 있습니다. ',
+    //       writer: '작성자X',
+    //       postedDate: '2024-12-31'
+    //     },
+    //     {
+    //       reportedId: 2,
+    //       reporter: '신고자B',
+    //       reason: '욕설 포함',
+    //       reportedDate: '2025-01-02',
+    //       title: '또 다른 문제의 코지로그',
+    //       content: '또 다른 코지로그 내용...',
+    //       writer: '작성자Y',
+    //       postedDate: '2025-01-01'
+    //     }
+    //   ];
+    getViolatedCozylogs()
+      .then((data) => {
+        console.log('가공된 목록:', data);
+        setViolations(data);
+      })
+      .catch((err) => {
+        console.error('에러 발생:', err);
+      });
+      
     }, []);
   
     // 테이블 행 클릭 시 모달 오픈
-    const handleRowClick = (violation: CozyLogViolation) => {
+    const handleRowClick = (violation: CozylogListItem) => {
       setSelectedViolation(violation);
       setShowModal(true);
     };
@@ -59,23 +58,24 @@ const CozyLogViolationList: React.FC = () => {
       setSelectedViolation(null);
     };
   
-    // 게시글 삭제
-    const handleDeletePost = (id: number, approve: boolean) => {
+    // 게시글 신고 승인/반려 처리
+    const handleDeletePost = async (id: number, approve: boolean) => {
       // // TODO: 실제 API 연동
-      if (approve) { 
-        // 게시글 신고 승인
+      const processResult = approve ? 'APPROVED' : 'REJECTED';
+      try {
+        await blockCozylog({
+            reportedId: id,
+            process: processResult,
+        });
         console.log('게시글 ID:', id);
-        alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
-      } else {  
-        // 게시글 신고 반려
-        console.log('게시글 ID:', id);
-        alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
+        alert(`선택된 게시글(${id}) 신고가 처리되었습니다.`);
+        setViolations(prev => prev.filter(item => item.reportedId !== id));
+        handleCloseModal();
+      } catch (err) {
+        console.error('승인 실패:', err);
       }
-      // 삭제 후 목록 갱신 예시
-      setViolations(prev => prev.filter(item => item.id !== id));
-      handleCloseModal();
-    };
-  
+    }
+    
     return (
       <div className="cozylog-violation-page">
         <h2>코지로그 신고 리스트</h2>
@@ -91,7 +91,7 @@ const CozyLogViolationList: React.FC = () => {
           </thead>
           <tbody>
             {violations.map((v) => (
-              <tr key={v.id} onClick={() => handleRowClick(v)}>
+              <tr key={v.reportedId} onClick={() => handleRowClick(v)}>
                 <td>{v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
@@ -125,8 +125,8 @@ const CozyLogViolationList: React.FC = () => {
                 justifyContent: 'end',
                 gap: '1rem',
               }}>
-              <button onClick={() => handleDeletePost(selectedViolation.id, true)}>승인</button>
-              <button onClick={() => handleDeletePost(selectedViolation.id, false)}>반려</button>
+              <button onClick={() => handleDeletePost(selectedViolation.reportedId, true)}>승인</button>
+              <button onClick={() => handleDeletePost(selectedViolation.reportedId, false)}>반려</button>
               <button onClick={handleCloseModal}>닫기</button>
               </div>
             </div>
