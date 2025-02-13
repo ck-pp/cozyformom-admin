@@ -5,6 +5,7 @@
   "proxy": "https://api.cozyformom.com/api/v1",
   "dependencies": {
     "@types/react": "^19.0.8",
+    "@types/axios": "^0.9.36",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "http-proxy-middleware": "^3.0.3",
