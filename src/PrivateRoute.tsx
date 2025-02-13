@@ -1,24 +1,42 @@
 // src/PrivateRoute.tsx
 
+import { jwtDecode } from 'jwt-decode';
 import React, { JSX } from 'react';
 import { Navigate } from 'react-router-dom';
+import { JwtPayload } from './api/OauthApiService.ts';
 
 interface PrivateRouteProps {
   children: JSX.Element;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  // 실제로는 JWT 토큰 검사, 서버 검증, Redux 상태, etc.
-  // 아래 예시는 단순히 로컬 스토리지 토큰 존재 여부로 가정
-  const isLoggedIn = !!localStorage.getItem('accessToken');
+  // isLoggedIn && isAdmin 조건을 만족해야 진입하도록 함
 
-  if (!isLoggedIn) {
-    // 로그인이 안 되어 있다면, 로그인 페이지로 리다이렉트
-    return <Navigate to="/login" replace />;
-  }
+   // 1) 토큰 가져오기
+   const token = sessionStorage.getItem('accessToken');
 
-  // 로그인이 되어 있으면, 보호된 페이지(자식 컴포넌트)를 그대로 렌더링
-  return children;
-};
+   if (!token) {
+     // 토큰이 없으면 로그인 페이지(혹은 홈)로 리다이렉트
+     return <Navigate to="/" replace />;
+   }
+ 
+   try {
+     // 2) JWT 디코딩 후 role 확인
+           const decoded = jwtDecode<JwtPayload>(token);
+           const userRole = decoded?.info?.role;
+ 
+     // 3) 관리자만 통과
+     if (userRole === 'ADMIN') {
+       return children; 
+     } else {
+       // 관리자 외에는 접근 불가 → 홈 등으로 리다이렉트
+       return <Navigate to="/" replace />;
+     }
+   } catch (err) {
+     console.error('Invalid token', err);
+     // 토큰 디코딩 실패 시도 마찬가지로 리다이렉트
+     return <Navigate to="/" replace />;
+   }
+ };
 
 export default PrivateRoute;
