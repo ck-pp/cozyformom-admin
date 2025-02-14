@@ -60,16 +60,21 @@ const CozyLogViolationList: React.FC = () => {
   
     // 게시글 신고 승인/반려 처리
     const handleDeletePost = async (id: number, approve: boolean) => {
-      // // TODO: 실제 API 연동
       const processResult = approve ? 'APPROVED' : 'REJECTED';
       try {
+        console.log('reportId', id, 'process', processResult);
         await blockCozylog({
-            reportedId: id,
+            reportId: id,
             process: processResult,
         });
         console.log('게시글 ID:', id);
-        alert(`선택된 게시글(${id}) 신고가 처리되었습니다.`);
-        setViolations(prev => prev.filter(item => item.reportedId !== id));
+        if (approve) {
+          alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
+        } else {
+          alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
+        }
+        
+        setViolations(prev => prev.filter(item => item.reportId !== id));
         handleCloseModal();
       } catch (err) {
         console.error('승인 실패:', err);
@@ -91,13 +96,12 @@ const CozyLogViolationList: React.FC = () => {
           </thead>
           <tbody>
             {violations.map((v) => (
-              <tr key={v.reportedId} onClick={() => handleRowClick(v)}>
-                <td>{v.reporter}</td>
+              <tr key={v.reportId} onClick={() => handleRowClick(v)}>
+                <td>{v.reporter == null ? `id ${v.reporterId}` : v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
                 <td>{v.title}</td>
-                <td>{v.writer}</td>
-                
+                <td>{v.writer == null ? `id ${v.writerId}` : v.writer}</td>
               </tr>
             ))}
           </tbody>
@@ -111,22 +115,22 @@ const CozyLogViolationList: React.FC = () => {
               onClick={(e) => e.stopPropagation()}  // 모달 영역 클릭 시 닫히지 않도록
             >
               <h3>📌 신고 상세 페이지</h3>
-              <p><strong>신고자:</strong> {selectedViolation.reporter}</p>
+              <p><strong>신고자:</strong> {selectedViolation.reporter == null ? `id ${selectedViolation.reporterId}` : selectedViolation.reporter}</p>
               <p><strong>신고 사유:</strong> {selectedViolation.reason}</p>
               <p><strong>신고 날짜:</strong> {selectedViolation.reportedDate}</p>
               <hr color="lightgrey" />
               <h4>✅ 코지로그 상세</h4>
               <p><strong>제목:</strong> {selectedViolation.title}</p>
               <p><strong>내용:</strong> {selectedViolation.content}</p>
-              <p><strong>작성자:</strong> {selectedViolation.writer}</p>
+              <p><strong>작성자:</strong> {selectedViolation.writer == null ? `id ${selectedViolation.writerId}` : selectedViolation.writer}</p>
               <p><strong>작성 날짜:</strong> {selectedViolation.postedDate}</p>
               <div style = {{
                 display: 'flex',
                 justifyContent: 'end',
                 gap: '1rem',
               }}>
-              <button onClick={() => handleDeletePost(selectedViolation.reportedId, true)}>승인</button>
-              <button onClick={() => handleDeletePost(selectedViolation.reportedId, false)}>반려</button>
+              <button onClick={() => handleDeletePost(selectedViolation.reportId, true)}>승인</button>
+              <button onClick={() => handleDeletePost(selectedViolation.reportId, false)}>반려</button>
               <button onClick={handleCloseModal}>닫기</button>
               </div>
             </div>
