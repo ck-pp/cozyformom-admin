@@ -47,16 +47,19 @@ import { blockComment, getViolatedComments } from '../../api/baseApi.ts';
   
     // 댓글 신고 승인/반려 처리
         const handleDeletePost = async (id: number, approve: boolean) => {
-          // // TODO: 실제 API 연동
           const processResult = approve ? 'APPROVED' : 'REJECTED';
           try {
             await blockComment({
-                reportedId: id,
+                reportId: id,
                 process: processResult,
             });
             console.log('댓글 ID:', id);
-            alert(`선택된 댓글(${id}) 신고가 처리되었습니다.`);
-            setViolations(prev => prev.filter(item => item.reportedId !== id));
+            if (approve) {
+              alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
+            } else {
+              alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
+            }
+            setViolations(prev => prev.filter(item => item.reportId !== id));
           } catch (err) {
             console.error('승인 실패:', err);
           }
@@ -80,11 +83,11 @@ import { blockComment, getViolatedComments } from '../../api/baseApi.ts';
           </thead>
           <tbody>
             {violations.map((v) => (
-              <tr key={v.reportedId}>
-                <td>{v.reporter}</td>
+              <tr key={v.reportId}>
+                <td>{v.reporter == null ? `id ${v.reporterId}` : v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
-                <td>{v.commentWriter}</td>
+                <td>{v.commentWriter == null ? `id ${v.commentWriterId}` : v.commentWriter}</td>
                 <td>{v.commentDate}</td>
                 <td style = {{width: '40%', textAlign: 'left'}}>{v.content}</td>
                 <td>
@@ -93,8 +96,8 @@ import { blockComment, getViolatedComments } from '../../api/baseApi.ts';
                         gap: '1rem',
                         justifyContent: 'center'
                     }}>
-                        <button onClick={() => handleDeletePost(v.reportedId, true)}>승인</button>
-                        <button onClick={() => handleDeletePost(v.reportedId, false)}>반려</button>
+                        <button onClick={() => handleDeletePost(v.reportId, true)}>승인</button>
+                        <button onClick={() => handleDeletePost(v.reportId, false)}>반려</button>
                     </div>
                 </td>
               </tr>
