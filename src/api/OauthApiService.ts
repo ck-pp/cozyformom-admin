@@ -5,7 +5,7 @@ import apiClient from './baseApi.ts';
 import { setAccessToken } from './auth.ts';
 
 
-// JWT payload 구조 (예시)
+// JWT payload 구조
 export interface JwtPayload {
     iss: string;
     iat: number;
@@ -14,7 +14,7 @@ export interface JwtPayload {
     info: {
       role: string; 
       userId?: string;       // USER, ADMIN일 때 존재
-      profileImage?: string; // GUEST일 때? 필요 시 추가
+      profileImage?: string; // GUEST일 때 필요 시 추가
       email?: string;
       oauthValue?: string;
     };
@@ -39,14 +39,12 @@ export interface JwtPayload {
       );
   
       // 서버 응답에서 message가 필요하다면
-      const { message } = response.data;
-      console.log('서버 메시지:', message);
+      // const { message } = response.data;
   
       // 200 OK 시 Authorization 헤더에서 JWT 추출
       const authHeader = response.headers['authorization'];
-      console.log(authHeader);
       if (!authHeader) {
-        throw new Error('No Authorization header found');
+        throw new Error('인증 헤더가 존재하지 않습니다.');
       }
       const token = authHeader.split(' ')[1]; // "Bearer xxxxx" → xxxxx
   
@@ -57,11 +55,11 @@ export interface JwtPayload {
       const decoded = jwtDecode<JwtPayload>(token);
       const roleString = decoded?.info?.role;
       if (!roleString) {
-        throw new Error('No role found in JWT');
+        throw new Error('JWT 토큰 안에 role이 존재하지 않습니다.');
       }
   
       const userType = findByString(roleString);
-      console.log('Decoded role:', userType);
+      console.log('role:', userType);
   
       return userType;
     } catch (error: any) {

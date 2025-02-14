@@ -11,7 +11,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<LoginPage />} /> */}
         <Route path="/" element={<LoginPage />} />
 
         {/* "/admin/*" → PrivateRoute(로그인 필요) */}
@@ -23,8 +22,6 @@ function App() {
             </PrivateRoute>
           } 
         />
-
-        {/* 기타 */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
     </Router>

@@ -5,39 +5,14 @@ import './CozyLogViolationList.css';
 import { CozylogListItem } from '../../types/CozylogType';
 import { blockCozylog, getViolatedCozylogs } from '../../api/baseApi.ts';
 
-// TODO: 코지로그 신고 리스트에서도 일괄삭제 필요한지 논의하기
 const CozyLogViolationList: React.FC = () => {
     const [violations, setViolations] = useState<CozylogListItem[]>([]);
     const [selectedViolation, setSelectedViolation] = useState<CozylogListItem | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
   
-    // 예시: 더미 데이터
     useEffect(() => {
-    //   const dummyData: CozylogListItem[] = [
-    //     {
-    //       reportedId: 1,
-    //       reporter: '신고자A',
-    //       reason: '부적절한 내용',
-    //       reportedDate: '2025-01-01',
-    //       title: '문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그문제의 코지로그',
-    //       content: '명령어를 실행하여 해당 프로세스를 중지합니다. 이러한 방법으로 포트 충돌 문제를 해결할 수 있습니다.다른 포트로 변경하기 가장 간단한 해결책은 프로젝트에서 사용하는 포트 번호를 변경하는 것입니다. 이를 위해서는 프로젝트의 코드에서 포트 번호를 수정하거나, 환경 변수를 변경해야 할 수도 있습니다. ',
-    //       writer: '작성자X',
-    //       postedDate: '2024-12-31'
-    //     },
-    //     {
-    //       reportedId: 2,
-    //       reporter: '신고자B',
-    //       reason: '욕설 포함',
-    //       reportedDate: '2025-01-02',
-    //       title: '또 다른 문제의 코지로그',
-    //       content: '또 다른 코지로그 내용...',
-    //       writer: '작성자Y',
-    //       postedDate: '2025-01-01'
-    //     }
-    //   ];
-    getViolatedCozylogs()
+      getViolatedCozylogs()
       .then((data) => {
-        console.log('가공된 목록:', data);
         setViolations(data);
       })
       .catch((err) => {
@@ -62,18 +37,15 @@ const CozyLogViolationList: React.FC = () => {
     const handleDeletePost = async (id: number, approve: boolean) => {
       const processResult = approve ? 'APPROVED' : 'REJECTED';
       try {
-        console.log('reportId', id, 'process', processResult);
         await blockCozylog({
             reportId: id,
             process: processResult,
         });
-        console.log('게시글 ID:', id);
         if (approve) {
           alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
         } else {
           alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
         }
-        
         setViolations(prev => prev.filter(item => item.reportId !== id));
         handleCloseModal();
       } catch (err) {
@@ -97,10 +69,12 @@ const CozyLogViolationList: React.FC = () => {
           <tbody>
             {violations.map((v) => (
               <tr key={v.reportId} onClick={() => handleRowClick(v)}>
+                {/* 신고자 닉네임이 존재하면 닉네임을, 존재하지 않으면 id를 출력한다. */}
                 <td>{v.reporter == null ? `id ${v.reporterId}` : v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
                 <td>{v.title}</td>
+                {/* 작성자 닉네임이 존재하면 닉네임을, 존재하지 않으면 id를 출력한다. */}
                 <td>{v.writer == null ? `id ${v.writerId}` : v.writer}</td>
               </tr>
             ))}
