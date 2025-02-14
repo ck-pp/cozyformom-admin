@@ -15,8 +15,8 @@ function AdminPage() {
                 alignItems: 'center',
                 gap: '2rem',
                 marginTop: '2rem' }}>
-                <Link to="/cozylog-violations">코지로그 신고 목록</Link>
-                <Link to="/comment-violations">댓글 신고 목록</Link>
+                <Link to="/admin/cozylog-violations">코지로그 신고 목록</Link>
+                <Link to="/admin/comment-violations">댓글 신고 목록</Link>
               </nav>
 
       {/* 서브 라우팅 */}
