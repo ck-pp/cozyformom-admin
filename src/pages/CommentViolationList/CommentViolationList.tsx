@@ -9,66 +9,39 @@ import { blockComment, getViolatedComments } from '../../api/baseApi.ts';
   const CommentViolationList: React.FC = () => {
     const [violations, setViolations] = useState<CommentListItem[]>([]);
   
-    // 더미 데이터 예시
     useEffect(() => {
-      // const dummyData: CommentListItem[] = [
-      //   {
-      //     id: 101,
-      //     reporter: '신고자C',
-      //     reason: '광고성 댓글',
-      //     reportedDate: '2025-01-03',
-      //     commentWriter: '댓글작성자A',
-      //     commentDate: '2025-01-02',
-      //     content: '이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다. 이 댓글은 광고입니다.',
-      //     checked: false
-      //   },
-      //   {
-      //     id: 102,
-      //     reporter: '신고자D',
-      //     reason: '욕설 포함',
-      //     reportedDate: '2025-01-04',
-      //     commentWriter: '댓글작성자B',
-      //     commentDate: '2025-01-03',
-      //     content: '심한 욕이 포함된 댓글입니다',
-      //     checked: false
-      //   }
-      // ];
-
       getViolatedComments()
-            .then((data) => {
-              console.log('가공된 목록:', data);
-              setViolations(data);
-            })
-            .catch((err) => {
-              console.error('에러 발생:', err);
-            });
+      .then((data) => {
+        setViolations(data);
+      })
+      .catch((err) => {
+        console.error('에러 발생:', err);
+      });
             
-          }, []);
+    }, []);
   
     // 댓글 신고 승인/반려 처리
-        const handleDeletePost = async (id: number, approve: boolean) => {
-          const processResult = approve ? 'APPROVED' : 'REJECTED';
-          try {
-            await blockComment({
-                reportId: id,
-                process: processResult,
-            });
-            console.log('댓글 ID:', id);
-            if (approve) {
-              alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
-            } else {
-              alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
-            }
-            setViolations(prev => prev.filter(item => item.reportId !== id));
-          } catch (err) {
-            console.error('승인 실패:', err);
-          }
+    const handleDeletePost = async (id: number, approve: boolean) => {
+      const processResult = approve ? 'APPROVED' : 'REJECTED';
+      try {
+        await blockComment({
+          reportId: id,
+          process: processResult,
+        });
+        if (approve) {
+          alert(`선택된 게시글(${id}) 신고가 승인되었습니다.`);
+        } else {
+          alert(`선택된 게시글(${id}) 신고가 반려되었습니다.`);
         }
+        setViolations(prev => prev.filter(item => item.reportId !== id));
+      } catch (err) {
+        console.error('승인 실패:', err);
+      }
+    }
   
     return (
       <div className="comment-violation-page">
         <h2>코지로그 댓글 신고 리스트</h2>
-  
         <table className="comment-violation-table">
           <thead>
             <tr>
@@ -84,9 +57,11 @@ import { blockComment, getViolatedComments } from '../../api/baseApi.ts';
           <tbody>
             {violations.map((v) => (
               <tr key={v.reportId}>
+                {/* 신고자 닉네임이 존재하면 닉네임을, 존재하지 않으면 id를 출력한다. */}
                 <td>{v.reporter == null ? `id ${v.reporterId}` : v.reporter}</td>
                 <td>{v.reason}</td>
                 <td>{v.reportedDate}</td>
+                {/* 댓글 작성자 닉네임이 존재하면 닉네임을, 존재하지 않으면 id를 출력한다. */}
                 <td>{v.commentWriter == null ? `id ${v.commentWriterId}` : v.commentWriter}</td>
                 <td>{v.commentDate}</td>
                 <td style = {{width: '40%', textAlign: 'left'}}>{v.content}</td>

@@ -11,7 +11,7 @@ function AdminPage() {
     <div className="admin-container">
       <h2>관리자 페이지</h2>
       <nav style={{ display: 'flex', 
-                justifyContent: 'center', /* 가운데 정렬 */
+                justifyContent: 'center',
                 alignItems: 'center',
                 gap: '2rem',
                 marginTop: '2rem' }}>

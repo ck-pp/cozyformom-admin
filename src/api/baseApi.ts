@@ -3,33 +3,17 @@ import { getAccessToken } from './auth.ts';
 import { CozylogListItem } from '../types/CozylogType';
 import { CommentListItem } from '../types/CommentType.ts';
 
-// const errorInterceptor = (error: AxiosError) => {
-//   if (error.response) {
-//     const { status, data } = error.response;
-
-//     if (status === 401) {
-//       sessionStorage.removeItem('accessToken');
-//       // 브라우저 전체 리다이렉트 (React Router 대신)
-//       window.location.replace('/');
-
-//     }
-//     const message = '알 수 없는 에러가 발생했습니다.';
-//     return Promise.reject({ statusCode: status, message});
-//   }
-//   return Promise.reject({ statusCode: 500, message: '서버와의 연결이 끊어졌습니다.' });
-// };
-
 // 1. Axios 인스턴스 생성
 const apiClient = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL, // 서버 API 기본 주소
-  withCredentials: true,              // 필요에 따라 쿠키 인증 등
-  timeout: 5000,                   // 타임아웃 설정 등
+  withCredentials: true,                       // 필요에 따라 쿠키 인증 등
+  timeout: 5000,                               // 타임아웃 설정 등
 });
 
 // 2. 요청/응답 인터셉터 설정
 apiClient.interceptors.request.use(
     (config) => {
-      // 요청 전 헤더에 토큰을 붙이거나 등등
+      // 요청 전 헤더에 토큰 붙임
       const token = getAccessToken();
       config.headers.Authorization = `Bearer ${token}`;
       return config;
@@ -60,7 +44,6 @@ apiClient.interceptors.request.use(
 export const getViolatedCozylogs = async (): Promise<CozylogListItem[]> => {
   // 1. 원본 응답 가져오기
   const response = await apiClient.get(`/admin/violation/log`);
-  console.log('신고된 코지로그 리스트 조회');
   
   // 2. 서버가 내려주는 전체 JSON에서 실제 데이터 추출
   const originalData = response.data;
@@ -68,7 +51,6 @@ export const getViolatedCozylogs = async (): Promise<CozylogListItem[]> => {
 
   // 3. 각 item을 원하는 형태로 가공하여 리턴
   const result = contentArray.map((item: any) => {
-    console.log(item);
     return {
       reportId: item.reportId,
       reporter: item.reporter.nickname,
@@ -135,5 +117,4 @@ export const getViolatedCozylogs = async (): Promise<CozylogListItem[]> => {
     return response.data;
   };
   
-  /** 예시: 공통적으로 쓸 수도 있는 'apiClient' 자체를 export */
   export default apiClient;
