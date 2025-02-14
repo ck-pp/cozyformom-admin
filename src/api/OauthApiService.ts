@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { UserType, findByString } from '../types/UserType.ts';
 import apiClient from './baseApi.ts';
+import { setAccessToken } from './auth.ts';
 
 
 // JWT payload 구조 (예시)
@@ -50,7 +51,7 @@ export interface JwtPayload {
       const token = authHeader.split(' ')[1]; // "Bearer xxxxx" → xxxxx
   
       // JWT 저장
-      sessionStorage.setItem('accessToken', token);
+      setAccessToken(token);
   
       // JWT 디코드하여 role 확인
       const decoded = jwtDecode<JwtPayload>(token);

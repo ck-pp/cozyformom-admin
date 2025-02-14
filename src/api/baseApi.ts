@@ -30,7 +30,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
       // 요청 전 헤더에 토큰을 붙이거나 등등
-      const token = sessionStorage.getItem('accessToken');
+      const token = getAccessToken();
       config.headers.Authorization = `Bearer ${token}`;
       return config;
     },
