@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import React, { JSX } from 'react';
 import { Navigate } from 'react-router-dom';
 import { JwtPayload } from './api/OauthApiService.ts';
+import { getAccessToken } from './api/auth.ts';
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -13,7 +14,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   // isLoggedIn && isAdmin 조건을 만족해야 진입하도록 함
 
    // 1) 토큰 가져오기
-   const token = sessionStorage.getItem('accessToken');
+   const token = getAccessToken();
 
    if (!token) {
      // 토큰이 없으면 로그인 페이지(혹은 홈)로 리다이렉트
