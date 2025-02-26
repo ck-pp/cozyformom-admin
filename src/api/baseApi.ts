@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { getAccessToken } from './auth.ts';
 import { CozylogListItem } from '../types/CozylogType';
 import { CommentListItem } from '../types/CommentType.ts';
