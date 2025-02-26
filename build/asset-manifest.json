@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.d2ad22cc.css",
+    "main.js": "/static/js/main.ba416fef.js",
+    "static/js/488.9f123bda.chunk.js": "/static/js/488.9f123bda.chunk.js",
+    "static/media/KakaoLoginButtonImage.png": "/static/media/KakaoLoginButtonImage.c44282d753efd7bcb002.png",
+    "index.html": "/index.html",
+    "main.d2ad22cc.css.map": "/static/css/main.d2ad22cc.css.map",
+    "main.ba416fef.js.map": "/static/js/main.ba416fef.js.map",
+    "488.9f123bda.chunk.js.map": "/static/js/488.9f123bda.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d2ad22cc.css",
+    "static/js/main.ba416fef.js"
+  ]
+}
