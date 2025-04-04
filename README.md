@@ -1,70 +1,32 @@
-# Getting Started with Create React App
+# 🤰Cozy For Mom - Admin Web
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**✅ 주제**
 
-## Available Scripts
+코지포맘 앱 서비스의 신고된 게시글 및 댓글을 처리하기 위한 관리자 페이지
 
-In the project directory, you can run:
+**✅ 메인화면 이미지**
 
-### `npm start`
+<img src="https://github.com/user-attachments/assets/276f7981-a27a-4900-aeab-e3dc9ac840aa" alt="코지포맘_관리자웹_화면" width="700">
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**✅ 기획배경**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 앱스토어 3번째 심사에서 ‘커뮤니티 기능을 갖춘 앱은 게시글 및 댓글 신고 기능이 필수’라는 사유로 반려되었습니다.
+- 기존 커뮤니티 서비스를 분석했을때 게시글과 댓글은 신고 후 즉시 숨김 처리되고,
 
-### `npm test`
+  관리자가 별도의 시스템에서 승인/반려를 결정하도록 설계하는 것이 가장 적합한 프로세스라고 판단했습니다.
+- 따라서 신고된 게시글과 댓글 리스트를 조회하고, 이를 처리할 수 있는 웹 페이지를 기획/개발했습니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ 사용 기술 및 라이브러리
 
-### `npm run build`
+- React, Typescript, Redux-toolkit, CSS, VSCode
+- Figma
+- Git, GitHub
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🧑‍🧑‍🧒‍🧒 팀 구성원
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Front-end(1) : 박채경
+- Back-end(1) : 안소현
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🔗 링크
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- 웹사이트 링크 : https://admin.cozyformom.com
